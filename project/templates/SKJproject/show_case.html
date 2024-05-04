@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Detail</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Case Detail</h1>
+    <ul class="list-unstyled">
+        <li><strong>Name:</strong> {{ case.name }}</li>
+        <li><strong>Type:</strong> {{ case.case_type }}</li>
+        <li><strong>Detective:</strong> {{ case.detective }}</li>
+        <li><strong>Judge:</strong> {{ case.judge }}</li>
+        <li><strong>Start Date:</strong> {{ case.start_date }}</li>
+        <li><strong>End Date:</strong> {{ case.end_date }}</li>
+        <li><strong>Description:</strong> {{ case.description }}</li>
+    </ul>
+    
+    <h3>Defendants:</h3>
+    <ul class="list-unstyled">
+      {% for defendant in case.defendant_set.all %}
+        <li>{{ defendant.person.fname }} {{ defendant.person.lname }}</li>
+      {% endfor %}
+    </ul>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <a href="{% url 'show_evidence' case_id=case.id %}" class="btn btn-primary mb-2">Show Evidence</a>
+            <a href="{% url 'show_witness' case_id=case.id %}" class="btn btn-primary mb-2">Show Witness</a>
+            <a href="{% url 'add_defendant' case_id=case.id %}" class="btn btn-primary mb-2">Add Defendant</a>
+            <a href="{% url 'add_witness' case_id=case.id %}" class="btn btn-primary mb-2">Add Witness</a>
+            <a href="{% url 'add_evidence' case_id=case.id %}" class="btn btn-primary mb-2">Add Evidence</a>
+            <a href="{% url 'add_criminal_record' case_id=case.id %}" class="btn btn-primary mb-2">Add Criminal Record</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="footer mt-3">
+                <a href="{% url 'cases' %}" class="btn btn-secondary">Back to Cases</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

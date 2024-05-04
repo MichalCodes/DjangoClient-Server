@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cases</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <h1>Cases</h1>
+    {% for case in all_cases %}
+        <h5 style="font-size: 16px;"><a href="{% url 'show_case' case.id %}">{{ case.name }} - {{ case.case_type }}</a></h5>
+    {% endfor %}
+    <a href="{% url 'addcase' %}" class="btn btn-primary mt-3">Add Case</a>
+</div>
+
+<div class='footer fixed-bottom text-left' style="background-color: #007bff; padding: 10px;">
+    <a href="{% url 'index' %}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Show Persons </a>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
