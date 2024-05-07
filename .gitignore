@@ -1,2 +1,11 @@
+# Ignorovat virtuální prostředí
 myenv/
+
+# Ignorovat soubory __pycache__
 __pycache__/
+
+# Ignorovat databázové soubory
+*.db
+
+# Ignorovat migrace databáze
+/migrations/
