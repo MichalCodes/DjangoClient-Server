@@ -1,14 +1,26 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
+from django.db.models import Q
 from .models import Person, Case, CriminalHistory, Witnes, Defendant, Evidence
-from .forms import PersonForm, CaseForm, WitnessForm, EvidenceForm, CriminalHistoryForm, DefendantForm
+from .forms import PersonForm, CaseForm, WitnessForm, EvidenceForm, CriminalHistoryForm, DefendantForm, PersonSearchForm
 # Create your views here.
 case_ID = 1
 
 def index(request):
-    persons = Person.objects.all()
-    person_form = PersonForm()
-    return render(request, 'SKJproject/index.html', {'Persons' : persons, 'person_form' : person_form})
+    query = request.GET.get('query')
+    if query:
+        persons = Person.objects.filter(
+            fname__icontains=query) | Person.objects.filter(
+            lname__icontains=query)
+    else:
+        persons = Person.objects.all()
+
+    persons_with_criminal_record_count = Person.objects.exclude(criminalhistory__isnull=True).count()
+    total_persons_count = Person.objects.count()
+    persons_with_criminal_record_percent = round((persons_with_criminal_record_count / total_persons_count) * 100, 2)
+    top_crimes = list(CriminalHistory.objects.values_list('crime', flat=True).distinct().order_by('-crime')[:3])
+
+    return render(request, 'SKJproject/index.html', {'persons': persons, 'persons_with_criminal_record_percent': persons_with_criminal_record_percent, 'top_crimes': top_crimes, 'form': PersonSearchForm()})
 
 def person(request, person_id):
     person = get_object_or_404(Person, pk=person_id)
@@ -42,7 +54,14 @@ def addperson(request):
 
     
 def cases(request):
-    all_cases = Case.objects.all()
+    query = request.GET.get('q')
+    if query:
+        all_cases = Case.objects.filter(
+            Q(name__icontains=query) | Q(case_type__icontains=query)
+        )
+    else:
+        all_cases = Case.objects.all()
+
     return render(request, 'SKJproject/cases.html', {'all_cases': all_cases})
 
 

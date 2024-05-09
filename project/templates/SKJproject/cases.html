@@ -11,6 +11,16 @@
 
 <div class="container">
     <h1>Cases</h1>
+    <form action="{% url 'cases' %}" method="GET" class="form-inline mb-4">
+        <div class="form-group mr-2">
+            <input type="text" class="form-control" placeholder="Search..." name="q" value="{{ query }}">
+        </div>
+        <button type="submit" class="btn btn-primary mr-2">Search</button>
+        {% if query %}
+        <a href="{% url 'cases' %}" class="btn btn-secondary">Clear</a>
+        {% endif %}
+    </form>
+
     {% for case in all_cases %}
         <h5 style="font-size: 16px;"><a href="{% url 'show_case' case.id %}">{{ case.name }} - {{ case.case_type }}</a></h5>
     {% endfor %}

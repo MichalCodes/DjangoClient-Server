@@ -38,3 +38,6 @@ class DefendantForm(forms.ModelForm):
     class Meta:
         model = Defendant
         fields = '__all__'
+
+class PersonSearchForm(forms.Form):
+    query = forms.CharField(label='Search', max_length=100, required=False)      

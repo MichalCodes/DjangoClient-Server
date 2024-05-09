@@ -11,10 +11,31 @@
 
 <div class="container">
     <h1>Persons</h1>
-    {% for person in Persons %}
+
+    <form method="GET" class="form-inline mb-4">
+        <div class="form-group mr-2">
+            <input type="text" class="form-control" placeholder="Search..." name="q" value="{{ request.GET.q }}">
+        </div>
+        <button type="submit" class="btn btn-primary mr-2">Search</button>
+    </form>
+
+    {% for person in persons %}
         <h5 style="font-size: 16px;"><a href="{% url 'person' person.id %}">{{ person.fname }} {{ person.lname }} ({{ person.birthdate }} let, {{ person.sex }}, {{ person.address }})</a></h2>  
     {% endfor %}  
     <a href="{% url 'addperson' %}" class="btn btn-primary">Add Person</a>
+
+    {% if persons.count %}
+    <div class="mt-4">
+        <h2>Statistics</h2>
+        <p>{{ persons_with_criminal_record_percent }}% of persons have a Criminal Record</p>
+        <h3>Top 3 Crimes:</h3>
+        <ul>
+            {% for crime in top_crimes %}
+                <li>{{ crime }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
 </div>
 
 <div class='footer fixed-bottom text-right' style="background-color: #007bff; padding: 10px;">
