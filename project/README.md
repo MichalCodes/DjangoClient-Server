@@ -66,4 +66,4 @@ V cases můžeme přidat případ. a v levo dole se přesunout do Presons. Po kl
 
 ## Spuštění
 Server se rozběhne ```$ python3 manage.py runserver``` ten potom běží na localhost ```127.0.0.1:8000```
-
+Pokud nemáte nainstalované django nebo python bude ho třeba nainstalovat
