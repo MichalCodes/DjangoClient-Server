@@ -2,25 +2,25 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.db.models import Q
 from .models import Person, Case, CriminalHistory, Witnes, Defendant, Evidence
-from .forms import PersonForm, CaseForm, WitnessForm, EvidenceForm, CriminalHistoryForm, DefendantForm, PersonSearchForm
+from .forms import PersonForm, CaseForm, WitnessForm, EvidenceForm, CriminalHistoryForm, DefendantForm
 # Create your views here.
 case_ID = 1
 
 def index(request):
-    query = request.GET.get('query')
+    query = request.GET.get('q', '') #veymu co chci hledat
+    persons = Person.objects.all()
+
     if query:
-        persons = Person.objects.filter(
-            fname__icontains=query) | Person.objects.filter(
-            lname__icontains=query)
-    else:
-        persons = Person.objects.all()
+        persons = persons.filter(
+            Q(fname__icontains=query) | Q(lname__icontains=query) # vzhled8m p5es Q
+        )
 
     persons_with_criminal_record_count = Person.objects.exclude(criminalhistory__isnull=True).count()
     total_persons_count = Person.objects.count()
-    persons_with_criminal_record_percent = round((persons_with_criminal_record_count / total_persons_count) * 100, 2)
+    persons_with_criminal_record_percent = round((persons_with_criminal_record_count / total_persons_count) * 100, 2) #spo49t8m si hodnoty a procento
     top_crimes = list(CriminalHistory.objects.values_list('crime', flat=True).distinct().order_by('-crime')[:3])
 
-    return render(request, 'SKJproject/index.html', {'persons': persons, 'persons_with_criminal_record_percent': persons_with_criminal_record_percent, 'top_crimes': top_crimes, 'form': PersonSearchForm()})
+    return render(request, 'SKJproject/index.html', {'persons': persons, 'persons_with_criminal_record_percent': persons_with_criminal_record_percent, 'top_crimes': top_crimes, 'query': query})
 
 def person(request, person_id):
     person = get_object_or_404(Person, pk=person_id)
@@ -43,10 +43,10 @@ def addperson(request):
                 person.save()
                 return redirect('index')
             except Exception as e:
-                print(e)  # Výpis chyby pro kontrolu
+                print(e)
                 return render(request, 'SKJproject/addperson.html', {'form': form})
         else:
-            print(form.errors)  # Výpis chyb formuláře pro kontrolu
+            print(form.errors)
             return render(request, 'SKJproject/addperson.html', {'form': form})
     else:
         form = PersonForm()
@@ -69,11 +69,11 @@ def addcase(request):
     if request.method == 'POST':
         form = CaseForm(request.POST)
         if form.is_valid():
-            data = form.cleaned_data
+            data = form.cleaned_data # vezmu data
             try:
                 case = Case(
                     name=data['name'],
-                    case_type=data['case_type'],
+                    case_type=data['case_type'], # navkládat do databáze
                     detective=data['detective'],
                     judge=data['judge'],
                     start_date=data['start_date'],
@@ -83,10 +83,10 @@ def addcase(request):
                 case.save()
                 return redirect('cases')
             except Exception as e:
-                print(e)  # Výpis chyby pro kontrolu
+                print(e) 
                 return render(request, 'SKJproject/addcase.html', {'form': form})
         else:
-            print(form.errors)  # Výpis chyb formuláře pro kontrolu
+            print(form.errors)
             return render(request, 'SKJproject/addcase.html', {'form': form})
     else:
         form = CaseForm()
@@ -123,10 +123,10 @@ def addEvidence(request, case_id):
                 evidence.save()
                 return redirect('show_case', case_id=case_id)
             except Exception as e:
-                print(e)  # Výpis chyby pro kontrolu
+                print(e)
                 return render(request, 'SKJproject/add_evidence.html', {'form': form})
         else:
-            print(form.errors)  # Výpis chyb formuláře pro kontrolu
+            print(form.errors)
             return render(request, 'SKJproject/add_evidence.html', {'form': form})
     else:
         form = EvidenceForm()
@@ -151,7 +151,7 @@ def addDefendant(request, case_id):
         form = DefendantForm(request.POST)
         if form.is_valid():
             defendant = form.save(commit=False)
-            defendant.case = case  # Přiřadíme případ k obžalovanému
+            defendant.case = case
             defendant.save()
             return redirect('show_case', case_id=case.id)
     else:

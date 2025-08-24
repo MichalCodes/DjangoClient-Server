@@ -13,15 +13,18 @@
     <h1>Persons</h1>
 
     <form method="GET" class="form-inline mb-4">
-        <div class="form-group mr-2">
-            <input type="text" class="form-control" placeholder="Search..." name="q" value="{{ request.GET.q }}">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search..." name="q" value="{{ query }}">
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
         </div>
-        <button type="submit" class="btn btn-primary mr-2">Search</button>
     </form>
 
     {% for person in persons %}
-        <h5 style="font-size: 16px;"><a href="{% url 'person' person.id %}">{{ person.fname }} {{ person.lname }} ({{ person.birthdate }} let, {{ person.sex }}, {{ person.address }})</a></h2>  
+        <h5 style="font-size: 16px;"><a href="{% url 'person' person.id %}">{{ person.fname }} {{ person.lname }} ({{ person.birthdate }} let, {{ person.sex }}, {{ person.address }})</a></h5>  
     {% endfor %}  
+
     <a href="{% url 'addperson' %}" class="btn btn-primary">Add Person</a>
 
     {% if persons.count %}
